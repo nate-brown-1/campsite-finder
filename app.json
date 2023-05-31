@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4f99b1a7-93ed-41bf-874e-54fd370d1a9e"
+      }
+    },
+    "owner": "nate-brown-dev"
   }
 }
