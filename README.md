@@ -6,7 +6,7 @@ Written in React Native using Expo for iOS and Android.
 
 ## Whiteboard
 
-![Whiteboard with proposed user interface](../campsite-finder/img/campsite-finder-whiteboard.png)
+![Whiteboard with proposed user interface](./img/campsite-finder-whiteboard.png)
 
 ## Todo Tasks (more to come)
 
