@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, Dimensions, Button, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+import { ImageBackground, Dimensions, Button, ScrollView, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 
 import axios from 'axios';
-
 const XMLParser = require('react-xml-parser');
 
 const image = require('./img/campfire-background.png');
@@ -16,23 +15,29 @@ const screenHeight = Dimensions.get('screen').height;
 
 {/* function to search campgrounds by location (latitude-longitude) using Active.com Campground API */ }
 async function searchCurrentLocation(lat, lon) {
-  console.log(lat);
-  console.log(lon);
-  {/*REACT_APP_CAMPGROUND_API_KEY=8h5shmpyxpr64q7vyxctbzr4
-  const campgroundSearchUrl = `http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=${lat}&landmarkLong=${lon}&xml=true&api_key=${campgroundApiKey}`
-  const response = await fetch(campgroundSearchUrl);*/}
+  // console.log(lat);
+  // console.log(lon);
+  // console.log(campgroundApiKey);
+  const campgroundSearchUrl = `http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=${lat}&landmarkLong=${lon}&xml=true&api_key=8h5shmpyxpr64q7vyxctbzr4`;
   let response = null;
   try {
-    response = await axios.get('http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=47.8021&landmarkLong=-123.6044&xml=true&api_key=8h5shmpyxpr64q7vyxctbzr4')
-      .then(response => console.log(response));
+    response = await axios.get(campgroundSearchUrl);
+    // console.log(response);
+    // return response;
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-  console.log(response);
-  // const xmlData = await response.xml();
-  // console.log(xmlData);
-  // console.log("your current location is earth")
+  // console.log(response.data);
+  let xml = new XMLParser().parseFromString(response.data);
+  let nearestCampground = (xml.children[0].attributes.facilityName);
+  // console.log(nearestCampground);
+  return nearestCampground;
+  // return response;
+  // const xmlResponse = new XMLParser().parseFromString(response);
+  // console.log(xmlResponse);
 }
+
+
 
 export default function App() {
   const [searchResults, setSearchResults] = useState('');
@@ -51,17 +56,21 @@ export default function App() {
         </View>
 
         {/* button to search using geolocation API*/}
-        <TouchableHighlight onPress={ () => { searchCurrentLocation() } }>
-        <View style={styles.searchBox} onPress={() => { searchCurrentLocation(userLat, userLon)}}>
-          <Text>Search Current Location!</Text>
+        <View style={styles.searchBox}>
+          <TouchableHighlight onPress={() => {
+            let search = searchCurrentLocation(userLat, userLon);
+            console.log(search);
+            setSearchResults(search); 
+            }}>
+            <Text>Search Current Location!</Text>
+          </TouchableHighlight>
         </View>
-        </TouchableHighlight>
 
         {/*results box*/}
         <View style={searchResults ? styles.searchResultsBox : styles.resultsBox}>
           {searchResults
             ? (<ScrollView style={styles.scrollView}>
-              <Text>Your Search Results!</Text>
+              <Text>{searchResults}</Text>
             </ScrollView>)
             : (<Text>Results Go Here!</Text>)}
         </View>
