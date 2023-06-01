@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, Dimensions, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+
+import * as Location from 'expo-location';
 
 import axios from 'axios';
 const XMLParser = require('react-xml-parser');
@@ -19,8 +21,35 @@ export default function App() {
 
   const [infoModal, displayInfoModal] = useState(false);
 
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
+
   {/* function to search campgrounds by location (latitude-longitude) using Active.com Campground API */ }
-  const searchCurrentLocation = async (lat, lon) => {
+  const searchCurrentLocation = async (userLocation) => {
+    const lat = userLocation.coords.latitude;
+    const lon = userLocation.coords.longitude;
     const campgroundSearchUrl = `http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=${lat}&landmarkLong=${lon}&xml=true&api_key=8h5shmpyxpr64q7vyxctbzr4`;
     let response = null;
     try {
@@ -51,7 +80,7 @@ export default function App() {
 
         {/* button to search using geolocation API*/}
         <View style={styles.searchBox}>
-          <TouchableHighlight onPress={() => searchCurrentLocation(userLat, userLon)}>
+          <TouchableHighlight onPress={() => searchCurrentLocation(location)}>
             <Text>Search Current Location!</Text>
           </TouchableHighlight>
         </View>
