@@ -31,6 +31,14 @@
         "projectId": "4f99b1a7-93ed-41bf-874e-54fd370d1a9e"
       }
     },
-    "owner": "nate-brown-dev"
+    "owner": "nate-brown-dev",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ]
   }
 }
