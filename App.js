@@ -4,8 +4,15 @@ import { ImageBackground, Button, StyleSheet, Text, TextInput, View } from 'reac
 
 const image = require('./img/campfire-background.png');
 
-{/* function to get user location from geolocation API */}
-function searchCurrentLocation() {
+const campgroundApiKey = process.env.REACT_APP_CAMPGROUND_API_KEY;
+
+{/* function to search campgrounds by location (latitude-longitude) using Active.com Campground API */}
+async function searchCurrentLocation(userLat, userLon) {
+  const campgroundSearchUrl = `http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=${userLat}&landmarkLong=${userLon}&xml=true&api_key=${campgroundApiKey}`
+  const response = await fetch(campgroundSearchUrl);
+  console.log(response);
+  const xmlData = await response.xml();
+  console.log(xmlData);
   console.log("your current location is earth")
 }
 
@@ -15,7 +22,7 @@ export default function App() {
     <View  style={styles.container}>
 
       {/*image background*/}
-      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={image} resizeMode="cover" width="100%" style={styles.image}>
       <StatusBar color="white" />
 
       {/*title bar box*/}
@@ -66,8 +73,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 0,
   },
   image: {
     flex: 1,
+    width: viewport-width,
+    padding: 0,
   },
 });
