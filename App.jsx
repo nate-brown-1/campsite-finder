@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, Dimensions, Button, ScrollView, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
+import { ImageBackground, Dimensions, StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 
 import axios from 'axios';
 const XMLParser = require('react-xml-parser');
@@ -13,34 +13,28 @@ const userLon = -123.6044;
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 
-{/* function to search campgrounds by location (latitude-longitude) using Active.com Campground API */ }
-async function searchCurrentLocation(lat, lon) {
-  // console.log(lat);
-  // console.log(lon);
-  // console.log(campgroundApiKey);
-  const campgroundSearchUrl = `http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=${lat}&landmarkLong=${lon}&xml=true&api_key=8h5shmpyxpr64q7vyxctbzr4`;
-  let response = null;
-  try {
-    response = await axios.get(campgroundSearchUrl);
-    // console.log(response);
-    // return response;
-  } catch (e) {
-    console.log(e);
-  }
-  // console.log(response.data);
-  let xml = new XMLParser().parseFromString(response.data);
-  let nearestCampground = (xml.children[0].attributes.facilityName);
-  // console.log(nearestCampground);
-  return nearestCampground;
-  // return response;
-  // const xmlResponse = new XMLParser().parseFromString(response);
-  // console.log(xmlResponse);
-}
-
-
 
 export default function App() {
   const [searchResults, setSearchResults] = useState('');
+
+  const [infoModal, displayInfoModal] = useState(false);
+
+  {/* function to search campgrounds by location (latitude-longitude) using Active.com Campground API */ }
+  const searchCurrentLocation = async (lat, lon) => {
+    const campgroundSearchUrl = `http://api.amp.active.com/camping/campgrounds?landmarkName=true&landmarkLat=${lat}&landmarkLong=${lon}&xml=true&api_key=8h5shmpyxpr64q7vyxctbzr4`;
+    let response = null;
+    try {
+      response = await axios.get(campgroundSearchUrl);
+    } catch (e) {
+      console.log(e);
+    }
+    let xml = new XMLParser().parseFromString(response.data);
+    let nearestCampground = (xml.children[0].attributes.facilityName);
+    console.log(nearestCampground);
+    setSearchResults(nearestCampground);
+  }
+
+
   return (
     <View style={styles.screenContainer}>
 
@@ -57,11 +51,7 @@ export default function App() {
 
         {/* button to search using geolocation API*/}
         <View style={styles.searchBox}>
-          <TouchableHighlight onPress={() => {
-            let search = searchCurrentLocation(userLat, userLon);
-            console.log(search);
-            setSearchResults(search); 
-            }}>
+          <TouchableHighlight onPress={() => searchCurrentLocation(userLat, userLon)}>
             <Text>Search Current Location!</Text>
           </TouchableHighlight>
         </View>
@@ -69,9 +59,11 @@ export default function App() {
         {/*results box*/}
         <View style={searchResults ? styles.searchResultsBox : styles.resultsBox}>
           {searchResults
-            ? (<ScrollView style={styles.scrollView}>
-              <Text>{searchResults}</Text>
-            </ScrollView>)
+            ? (<View>
+              <Text style={styles.resultsText}>The closest campground is...</Text>
+              <Text style={styles.resultsText}>{searchResults}</Text>
+              </View>
+            )
             : (<Text>Results Go Here!</Text>)}
         </View>
 
@@ -118,8 +110,9 @@ const styles = StyleSheet.create({
   searchResultsBox: {
     flex: 5,
     backgroundColor: '#FFCC99',
+    opacity: 0.75,
     margin: 25,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   resultsBox: {
@@ -129,6 +122,10 @@ const styles = StyleSheet.create({
     margin: 25,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  resultsText: {
+    textAlign: 'center',
+    margin: 25,
   },
   aboutBox: {
     flex: 1,
