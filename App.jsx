@@ -4,13 +4,13 @@ import { ImageBackground, Dimensions, StyleSheet, TouchableHighlight, Text, View
 
 import * as Location from 'expo-location';
 
+import Results from './Results';
+import Modal from './Modal';
+
 import axios from 'axios';
 const XMLParser = require('react-xml-parser');
 
 const image = require('./img/campfire-background.png');
-const campgroundApiKey = process.env.REACT_APP_CAMPGROUND_API_KEY;
-const userLat = 47.8021;
-const userLon = -123.6044;
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -88,6 +88,7 @@ export default function App() {
         {/*results box*/}
         <View style={searchResults ? styles.searchResultsBox : styles.resultsBox}>
           {searchResults
+            // ? <Results />
             ? (<View>
               <Text style={styles.resultsText}>The closest campground is...</Text>
               <Text style={styles.resultsText}>{searchResults}</Text>

@@ -1,6 +1,6 @@
 # About
 
-Campsite Finder is an app that finds public campsite using API data from Recreation.gov. It allows searching for a specific location, or using your current location from your mobile device's geolocation API.
+Campsite Finder is an app that finds the nearest public campsite using remote API data from Active.com, and your current location obtained from the mobile device's built-in geolocation API.
 
 Written in React Native using Expo for iOS and Android.
 
@@ -16,13 +16,24 @@ As a user, I want to able to find the public campgrounds closest to my physical 
 
 ## Todo Tasks (more to come)
 
-Layout user interface in Expo
+// DONE  
+Layout user interface in Expo  
 
-Write event handlers
+// DONE  
+Write event handlers  
 
-Test Recreation.gov API (GET requests only)
+// DONE  
+Test Recreation.gov API (GET requests only) - DID NOT WORK  
 
-Create developer accounts for iOS / Android
+// DONE
+Find another campground API  
+Active.com API worked  
 
-Publish to app stores
+// TODO  
+Add reset button  
 
+// TODO  
+Create developer accounts for iOS / Android  
+
+// TODO  
+Publish to app stores  
